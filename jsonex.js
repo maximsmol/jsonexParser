@@ -92,21 +92,27 @@ unexpected = function ()
 
 //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 
+//Checkers
+
+//Returns true if current character is the last in the string
 isCurCharFinal = function ()
 {
 	return curCharI == string.length - 1;
 };
 
+//Returns true if the character is considered a 'space' character (new line / tab / space)
 isCharSpace = function (char)
 {
 	return char == '\t' || char == '\n' || char == ' ';
 };
 
+//Returns true if current character is considered a 'space' character (new line / tab / space)
 isCurCharSpace = function ()
 {
 	return isCharSpace(getCurChar());
 };
 
+//Returns true if the character is a quote
 isCharQuote = function (char)
 {
 	if (char == '\'') return '\'';
@@ -114,16 +120,19 @@ isCharQuote = function (char)
 	return null;
 };
 
+//Returns true if current character is a quote
 isCurCharQuote = function ()
 {
 	return isCharQuote(getCurChar());
 };
 
+//Returns true if the character is a special character for json
 isCharSpecial = function (char)
 {
 	return isCharQuote(char) || char == '{' || char == '}' || char == '[' || char == ']' || char == '(' || char == ')';
 };
 
+//Returns true if current character is a special character for json
 isCurCharSpecial = function ()
 {
 	return isCharSpecial(getCurChar());
@@ -131,6 +140,9 @@ isCurCharSpecial = function ()
 
 //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 
+//Readers
+
+//Reads a number
 readNum = function ()
 {
 	var res = 0, fraction = 0, parsingFraction = false;
@@ -166,6 +178,7 @@ readNum = function ()
 	return res + fraction / Math.pow(10, fraction.toString().length);
 };
 
+//Reads a string ending with endChar and allowing special characters to be in quoted strings
 readString = function (endChar, quoted)
 {
 	var res = '', readingToEnd = false;
@@ -191,6 +204,7 @@ readString = function (endChar, quoted)
 	return res;
 };
 
+//Reads a string property's value
 readStringValue = function ()
 {
 	var quoteType = '';
@@ -205,6 +219,7 @@ readStringValue = function ()
 	return res;
 };
 
+//Reads a comma separated list to arr ending with endChar
 readListTo = function (ctx, arr, endChar)
 {
 	if (!endChar) endChar = ']';
@@ -218,6 +233,7 @@ readListTo = function (ctx, arr, endChar)
 	}
 };
 
+//Reads a propertie name/key
 readKey = function ()
 {
 	var enQuoted = false, quoteType = '';
@@ -247,6 +263,7 @@ readKey = function ()
 	return res;
 };
 
+//Reads an array
 readArray = function (ctx)
 {
 	expect('[');
@@ -267,6 +284,7 @@ readArray = function (ctx)
 	return res;
 };
 
+//Reads an object
 readObject = function (ctx)
 {
 	expect('{');
@@ -294,6 +312,7 @@ readObject = function (ctx)
 	return res;
 };
 
+//Parses JSONex handler
 parseHandler = function (ctx)
 {
 	var handlerName = readString('(');
@@ -311,6 +330,7 @@ parseHandler = function (ctx)
 	return handlers[handlerName].apply(undefined, args);
 };
 
+//Reads a property's value
 readValue = function (ctx)
 {
 	if (isCurCharQuote()) return readStringValue();
@@ -331,6 +351,7 @@ var JsonexParser = function (hndlrs, ctx)
 	context = ctx;
 };
 
+//Parses a given string
 JsonexParser.prototype.parse = function (str)
 {
 	if (!str) return str;
