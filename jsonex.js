@@ -145,7 +145,13 @@ isCurCharSpecial = function ()
 //Reads a number
 readNum = function ()
 {
-	var res = 0, fraction = 0, parsingFraction = false;
+	var res = 0, fraction = 0, parsingFraction = false, negative = false;
+
+	if (getCurChar() == '-')
+	{
+		negative = true;
+		nextChar();
+	}
 
 	var curInt;
 	while (true)
@@ -175,7 +181,8 @@ readNum = function ()
 		else break;
 	}
 
-	return res + fraction / Math.pow(10, fraction.toString().length);
+	var result = res + fraction / Math.pow(10, fraction.toString().length);
+	return negative ? -result : result;
 };
 
 //Reads a string ending with endChar and allowing special characters to be in quoted strings
@@ -334,7 +341,7 @@ parseHandler = function (ctx)
 readValue = function (ctx)
 {
 	if (isCurCharQuote()) return readStringValue();
-	if (!isNaN(parseInt(getCurChar())) || getCurChar() == '.') return readNum();
+	if (!isNaN(parseInt(getCurChar())) || getCurChar() == '.' || getCurChar() == '-') return readNum();
 	if (getCurChar() == '[') return readArray(ctx);
 	if (getCurChar() == '{') return readObject(ctx);
 	if (!isCurCharSpecial() && !isCurCharSpace()) return parseHandler(ctx);
