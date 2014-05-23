@@ -188,17 +188,18 @@ readNum = function ()
 //Reads a string ending with endChar and allowing special characters to be in quoted strings
 readString = function (endChar, quoted)
 {
-	var res = '', readingToEnd = false;
+	var res = '', readingToEnd = false, escaping = false;
 
 	if (!endChar) readingToEnd = true;
 
 	while (true)
 	{
 		var curChar = getCurChar();
-		if (curChar == endChar) break;
-		if (quoted === false && isCharSpecial(curChar)) unexpected();
+		if (!escaping && curChar == endChar) break;
+		if (!escaping && quoted === false && isCharSpecial(curChar)) unexpected();
 
-		res += curChar;
+		if (!escaping && curChar == '\\') escaping = true;
+		else res += curChar;
 
 		if (isCurCharFinal())
 		{

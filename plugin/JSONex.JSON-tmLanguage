@@ -1,0 +1,236 @@
+// [PackageDev] target_format: plist, ext: tmLanguage
+{
+	"name": "JSONex",
+	"scopeName": "source.JSONex",
+	"fileTypes": ["jsonex"],
+	"uuid": "9950f500-32a0-4bb1-8e80-a9e936a355e9",
+
+	"repository": {
+		"array":
+		{
+			"begin": "\\[",
+			"beginCaptures":
+			{
+				"0": { "name": "punctuation.definition.array.begin.jsonex" }
+			},
+			"end": "\\]",
+			"endCaptures":
+			{
+				"0": { "name": "punctuation.definition.array.end.jsonex" }
+			},
+			"name": "meta.structure.array.jsonex",
+			"patterns": [
+				{
+					"include": "#value"
+				},
+				{
+					"match": ",",
+					"name": "punctuation.separator.array.jsonex"
+				},
+				{
+					"match": "[^\\s\\]]",
+					"name": "invalid.illegal.expected-array-separator.jsonex"
+				}
+			]
+		},
+		"constant":
+		{
+			"match": "\\b(?:true|false|null)\\b",
+			"name": "constant.language.jsonex"
+		},
+		"number":
+		{
+			"match": "-?(?:0|[1-9]\\d*)(?:(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)?",
+			"name": "constant.numeric.jsonex"
+		},
+		"object":
+		{
+			"begin": "{",
+			"beginCaptures": 
+			{
+				"0": { "name": "punctuation.definition.dictionary.begin.jsonex" }
+			},
+			"end": "}",
+			"endCaptures":
+			{
+				"0": { "name": "punctuation.definition.dictionary.end.jsonex" }
+			},
+			"name": "meta.structure.dictionary.jsonex",
+			"patterns": [
+				{
+					"include": "#string"
+				},
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#jsonexKey"
+				},
+				{
+					"begin": ":",
+					"beginCaptures":
+					{
+						"0": { "name": "punctuation.separator.dictionary.key-value.jsonex" }
+					},
+					"end": "(,)|(?=\\})",
+					"endCaptures":
+					{
+						"1": { "name": "punctuation.separator.dictionary.pair.jsonex" }
+					},
+					"name": "meta.structure.dictionary.value.jsonex",
+					"patterns": [
+						{
+							"include": "#value"
+						},
+						{
+							"match": "[^\\s,]",
+							"name": "invalid.illegal.expected-dictionary-separator.jsonex"
+						}
+					]
+				},
+				{
+					"match": "[^\\s\\}]",
+					"name": "invalid.illegal.expected-dictionary-separator.jsonex"
+				}
+			]
+		},
+		"jsonexKey":
+		{
+			"match": ",\\s*.+:",
+			"patterns": [
+				{
+					"include": "stringPatterns"
+				},
+				{
+					"match": "\\s+",
+					"name": "invalid.illegal.unexpected-space.jsonex"
+				}
+			],
+			"name": "punctuation.definition.dictionary.jsonex-key.jsonex"
+		},
+		"stringPatterns":
+		{
+			"patterns": [
+				{
+					"match": "\\\\(?:[\"\\\\/bfnrt]|u[0-9a-fA-F]{4})",
+					"name": "constant.character.escape.jsonex"
+				},
+				{
+					"match": "\\\\.",
+					"name": "invalid.illegal.unrecognized-string-escape.jsonex"
+				}
+			]
+		},
+		"stringDouble":
+		{
+			"begin": "\"",
+			"beginCaptures":
+			{
+				"0": { "name": "punctuation.definition.string.begin.jsonex" }
+			},
+			"end": "\"",
+			"endCaptures":
+			{
+				"0": { "name": "punctuation.definition.string.end.jsonex" }
+			},
+			"name": "string.quoted.double.jsonex",
+			"patterns": [
+				{
+					"include": "#stringPatterns"
+				}
+			]
+		},
+		"stringSingle":
+		{
+			"begin": "'",
+			"beginCaptures":
+			{
+				"0": { "name": "punctuation.definition.string.begin.jsonex" }
+			},
+			"end": "'",
+			"endCaptures":
+			{
+				"0": { "name": "punctuation.definition.string.end.jsonex" }
+			},
+			"name": "string.quoted.single.jsonex",
+			"patterns": [
+				{
+					"include": "#stringPatterns"
+				}
+			]
+		},
+		"string":
+		{
+			"patterns": [
+				{
+					"include": "#stringSingle"
+				},
+				{
+					"include": "#stringDouble"
+				}
+			]
+		},
+		"value":
+		{
+			"patterns": [
+				{
+					"include": "#array"
+				},
+				{
+					"include": "#constant"
+				},
+				{
+					"include": "#number"
+				},
+				{
+					"include": "#object"
+				},
+				{
+					"include": "#jsonexKey"
+				},
+				{
+					"include": "#string"
+				},
+				{
+					"include": "#comments"
+				}
+			]
+		},
+		"comments":
+		{
+			"patterns": [
+				{
+					"begin": "/\\*\\*",
+					"captures":
+					{
+						"0": { "name": "punctuation.definition.comment.jsonex" }
+					},
+					"end" : "\\*/",
+					"name": "comment.block.documentation.jsonex"
+				},
+				{
+					"begin": "/\\*",
+					"captures":
+					{
+						"0": { "name": "punctuation.definition.comment.jsonex" }
+					},
+					"end" : "\\*/",
+					"name": "comment.block.jsonex"
+				},
+				{
+					"match": "(//).*$\\n?",
+					"captures":
+					{
+						"1": { "name": "punctuation.definition.comment.jsonex" }
+					},
+					"name": "comment.line.double-slash.js"
+				}
+			]
+		}
+	},
+	"patterns": [
+		{
+			"include": "#value"
+		}
+	]
+}
