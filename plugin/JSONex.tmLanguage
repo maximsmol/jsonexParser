@@ -45,19 +45,7 @@
 			<array>
 				<dict>
 					<key>include</key>
-					<string>#value</string>
-				</dict>
-				<dict>
-					<key>match</key>
-					<string>,</string>
-					<key>name</key>
-					<string>punctuation.separator.array.jsonex</string>
-				</dict>
-				<dict>
-					<key>match</key>
-					<string>[^\s\]]</string>
-					<key>name</key>
-					<string>invalid.illegal.expected-array-separator.jsonex</string>
+					<string>#list</string>
 				</dict>
 			</array>
 		</dict>
@@ -120,10 +108,26 @@
 			<key>name</key>
 			<string>constant.language.jsonex</string>
 		</dict>
+		<key>jsonexCallable</key>
+		<dict>
+			<key>begin</key>
+			<string>(?&lt;=:)\s*[\w\.]+\(</string>
+			<key>end</key>
+			<string>\)</string>
+			<key>name</key>
+			<string>punctuation.definition.jsonex-callable.jsonex</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#value</string>
+				</dict>
+			</array>
+		</dict>
 		<key>jsonexKey</key>
 		<dict>
 			<key>match</key>
-			<string>,\s*.+:</string>
+			<string>\w+(?=:)</string>
 			<key>name</key>
 			<string>punctuation.definition.dictionary.jsonex-key.jsonex</string>
 			<key>patterns</key>
@@ -137,6 +141,28 @@
 					<string>\s+</string>
 					<key>name</key>
 					<string>invalid.illegal.unexpected-space.jsonex</string>
+				</dict>
+			</array>
+		</dict>
+		<key>list</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#value</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>,</string>
+					<key>name</key>
+					<string>punctuation.separator.array.jsonex</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>[^\s\]]</string>
+					<key>name</key>
+					<string>invalid.illegal.expected-array-separator.jsonex</string>
 				</dict>
 			</array>
 		</dict>
@@ -282,7 +308,7 @@
 			<array>
 				<dict>
 					<key>match</key>
-					<string>\\(?:["\\/bfnrt]|u[0-9a-fA-F]{4})</string>
+					<string>\\(?:["'\\/bfnrt]|u[0-9a-fA-F]{4})</string>
 					<key>name</key>
 					<string>constant.character.escape.jsonex</string>
 				</dict>
@@ -348,7 +374,7 @@
 				</dict>
 				<dict>
 					<key>include</key>
-					<string>#jsonexKey</string>
+					<string>#jsonexCallable</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -362,7 +388,7 @@
 		</dict>
 	</dict>
 	<key>scopeName</key>
-	<string>source.JSONex</string>
+	<string>source.jsonex</string>
 	<key>uuid</key>
 	<string>9950f500-32a0-4bb1-8e80-a9e936a355e9</string>
 </dict>

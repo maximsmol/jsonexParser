@@ -10,7 +10,7 @@
 		multiline
 		comment
 	*/
-	e:{ hello:'world' },
+	e:{ hello:'\'world' },
 	f:['a',/*This be comment*/
 	['b',],
 	{a:0}, 0,],

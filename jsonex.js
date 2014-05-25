@@ -6,7 +6,7 @@ var string, handlers, curCharI, context;
 //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 
 //Special
-var parserBroken, getCurChar, trySkipComment, nextChar, expect, expected, expectedChar, unexpected;
+var parserBroken, getCurChar, trySkipComment, nextChar, expected, expectedChar, expect, unexpected;
 
 //Checkers
 var isCurCharFinal, isCharSpace, isCurCharSpace, isCharQuote, isCurCharQuote, isCharSpecial, isCurCharSpecial;
@@ -72,16 +72,16 @@ expect = function (char)
 	if (getCurChar() != char) expectedChar(char);
 };
 
-//Call to send a message, when something is not as expected
-expected = function (msg)
-{
-	throw new Error('Expected ' + msg + ' at ' + curCharI + ', but found: ' + getCurChar());
-};
-
 //Call to send a message, when current character is not as expected
 expectedChar = function (char)
 {
 	expected('\'' + char + '\'');
+};
+
+//Call to send a message, when something is not as expected
+expected = function (msg)
+{
+	throw new Error('Expected ' + msg + ' at ' + curCharI + ', but found: ' + getCurChar());
 };
 
 //Call to tell user, when current character is not as expected
@@ -197,6 +197,23 @@ readString = function (endChar, quoted)
 		var curChar = getCurChar();
 		if (!escaping && curChar == endChar) break;
 		if (!escaping && quoted === false && isCharSpecial(curChar)) unexpected();
+
+		if (escaping)
+		{
+			switch (getCurChar())
+			{
+				case '"': break;
+				case '\'': break;
+				case '\\': break;
+				case '/': break;
+				case 'b': break;
+				case 'f': break;
+				case 'n': break;
+				case 'r': break;
+				case 't': break;
+				default: throw new Error('Unrecognized string escape at ' + curCharI + ' (' + getCurChar() + ')!');
+			}
+		}
 
 		if (!escaping && curChar == '\\') escaping = true;
 		else res += curChar;

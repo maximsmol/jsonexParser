@@ -1,0 +1,5 @@
+<snippet>
+    <content><![CDATA[$1: '$2']]></content>
+    <tabTrigger>str</tabTrigger>
+    <scope>source.jsonex</scope>
+</snippet>
