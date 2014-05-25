@@ -1,6 +1,6 @@
 'use strict';
 
-var JsonexParser = require('./jsonex.js');
+var JsonexParser = require('../jsonex.js');
 
 var handlers = {
 	'Math.pow': function (ctx, num, power)

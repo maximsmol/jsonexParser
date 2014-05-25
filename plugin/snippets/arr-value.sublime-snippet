@@ -1,0 +1,8 @@
+<snippet>
+    <content><![CDATA[$1:
+[
+	$2
+]]]></content>
+    <tabTrigger>varr</tabTrigger>
+    <scope>source.jsonex</scope>
+</snippet>
