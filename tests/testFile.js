@@ -1,27 +1,38 @@
 'use strict';
 
-var fs = require('fs'), JsonexParser = require('../jsonex.js');
+var fs = require('fs'), JsonexParser = require('../jsonex2.js');
 
 var handlers = {
-	'Math.pow': function (ctx, num, power)
+	callable: function(ctx, input1, input2)
 	{
-		return Math.pow(num, power);
+		return 'Hey! ' + input1 + ' + ' + input2;
 	},
-	test: function (ctx, test)
+	'*': function(ctx, replacing, input)
 	{
-		return 'this be test: ' + test;
+		return 'Im the default handler, your input was ' + input + ' repalcing: ' + replacing;
 	}
 };
 
-var input = '';
-fs.readFile('./test.jsonex', 'utf8', function (err,data) {
+var fileIndex = process.argv[2];
+if (fileIndex == null) fileIndex = 0;
+
+var files = ['./dictNKeys.jsonex', './arrayNValues.jsonex', './stringEscapes.jsonex', './comments.jsonex', './all.jsonex'];
+var file  = files[fileIndex];
+
+console.log('PARSING FILE:', file);
+console.log('TEST INDEX:',fileIndex);
+
+fs.readFile(file, 'utf8', function (err,data) {
 	if (err) return console.log(err);
 
-	input = data;
+	var input = data;
 
-	console.log('PARSING:\n',input);
-	console.log('- - -');
+	console.log('PARSING:');
+	console.log(input);
+
+	console.log('- - JSONEX - -');
 
 	var ctx = {};
-	console.log(new JsonexParser(handlers, ctx).parse(input));
+	var parsed = new JsonexParser(handlers, ctx).parse(input);
+	console.log(parsed);
 });

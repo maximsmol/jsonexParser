@@ -1,0 +1,5 @@
+{
+	"a": "quote string",
+	'b': "apostrophe string",
+	 c : "jsonex key",
+}
