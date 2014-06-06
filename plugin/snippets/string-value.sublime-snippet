@@ -1,5 +1,5 @@
 <snippet>
-    <content><![CDATA[$1: '$2']]></content>
-    <tabTrigger>str</tabTrigger>
+    <content><![CDATA[$1$SELECTION: '$2']]></content>
+    <tabTrigger>vstr</tabTrigger>
     <scope>source.jsonex</scope>
 </snippet>

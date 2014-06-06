@@ -1,5 +1,5 @@
 <snippet>
-    <content><![CDATA[$1:
+    <content><![CDATA[$1$SELECTION:
 [
 	$2
 ]]]></content>

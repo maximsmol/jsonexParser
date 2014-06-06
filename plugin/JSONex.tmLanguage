@@ -47,6 +47,10 @@
 					<key>include</key>
 					<string>#list</string>
 				</dict>
+				<dict>
+					<key>include</key>
+					<string>#comments</string>
+				</dict>
 			</array>
 		</dict>
 		<key>comments</key>
@@ -111,7 +115,7 @@
 		<key>jsonexCallable</key>
 		<dict>
 			<key>begin</key>
-			<string>(?&lt;=:)\s*[\w\.]+\(</string>
+			<string>(?&lt;=:|,)\s*[^\d*/\-+^!\s\[\]{}:,'"\]][^*/\-+^!\s\[\]{}:,'"\]]*\s*\(</string>
 			<key>end</key>
 			<string>\)</string>
 			<key>name</key>
@@ -122,19 +126,29 @@
 					<key>include</key>
 					<string>#value</string>
 				</dict>
+				<dict>
+					<key>include</key>
+					<string>#comments</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\s+</string>
+					<key>name</key>
+					<string>invalid.illegal.unexpected-space.jsonex</string>
+				</dict>
 			</array>
 		</dict>
 		<key>jsonexKey</key>
 		<dict>
 			<key>match</key>
-			<string>\w+(?=:)</string>
+			<string>[^\d*/\-+^!\s\[\]{}:,'"\]][^*/\-+^!\s\[\]{}:,'"\]]*\s*(?=:)</string>
 			<key>name</key>
 			<string>punctuation.definition.dictionary.jsonex-key.jsonex</string>
 			<key>patterns</key>
 			<array>
 				<dict>
 					<key>include</key>
-					<string>stringPatterns</string>
+					<string>#comments</string>
 				</dict>
 				<dict>
 					<key>match</key>
@@ -157,6 +171,10 @@
 					<string>,</string>
 					<key>name</key>
 					<string>punctuation.separator.array.jsonex</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#comments</string>
 				</dict>
 				<dict>
 					<key>match</key>
