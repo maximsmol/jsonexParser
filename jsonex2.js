@@ -12,18 +12,19 @@ var JsonexParser = function(handlers, initialContext)
 JsonexParser.prototype.parse = function(string)
 {
 	try{
-	if (!string) return;
+		if (!string) return;
 
-	this.string = string;
-	this.charIndex = 0;
-	this.lineNumber = 0;
+		this.string = string;
+		this.charIndex = 0;
+		this.lineNumber = 0;
 
-	return this.parseValue(this.initialContext);
-}catch(e)
-{
-	console.log(this.charIndex);
-	throw e;
-}
+		return this.parseValue(this.initialContext);
+	}
+	catch(e)
+	{
+		console.log('Error at:', this.lineNumber + ':' + this.charIndex % this.lineNumber);
+		throw e;
+	}
 };
 
 module.exports = JsonexParser;
@@ -480,6 +481,7 @@ JsonexParser.prototype.expect = function(char)
 
 JsonexParser.prototype.next = function()
 {
+	if (this.charIs('\n')) this.lineNumber++;
 	this.charIndex++;
 };
 
