@@ -1,7 +1,7 @@
 'use strict';
 
 // Globals
-var string, handlers, curCharI, context;
+var string, handlers, curCharI, lineCount, context;
 
 //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 
@@ -12,7 +12,7 @@ var parserBroken, getCurChar, trySkipComment, nextChar, expected, expectedChar, 
 var isCurCharFinal, isCharSpace, isCurCharSpace, isCharQuote, isCurCharQuote, isCharSpecial, isCurCharSpecial;
 
 //Readers
-var readNum, readString, readStringValue, readListTo, readKey, readArray, readObject, parseHandler, readValue;
+var readNum, parseUnicode, readString, readStringValue, readListTo, readKey, readArray, readObject, parseHandler, readValue;
 
 //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 
@@ -58,9 +58,10 @@ trySkipComment = function ()
 //Moves current character pointer onde char, checking if it is in bounds of a string
 nextChar = function (doNotSkipSpace, skippingComment)
 {
+	if (getCurChar() == '\n') lineCount++;
 	curCharI++;
 	if (string.length <= curCharI || curCharI < 0)
-		parserBroken ('current character index out of string bounds (' + curCharI + ')');
+		parserBroken ('current character index out of string bounds (' + lineCount + ':' + curCharI%lineCount + ')');	
 
 	if (skippingComment !== true) trySkipComment();
 	if (doNotSkipSpace !== true && isCurCharSpace()) nextChar();
@@ -81,13 +82,13 @@ expectedChar = function (char)
 //Call to send a message, when something is not as expected
 expected = function (msg)
 {
-	throw new Error('Expected ' + msg + ' at ' + curCharI + ', but found: ' + getCurChar());
+	throw new Error('Expected ' + msg + ' at ' + lineCount + ':' + curCharI%lineCount + ', but found: ' + getCurChar() + '!');
 };
 
 //Call to tell user, when current character is not as expected
 unexpected = function ()
 {
-	throw new Error('Unexpected character at ' + curCharI + ' \'' + getCurChar() + '\'');
+	throw new Error('Unexpected character at ' + lineCount + ':' + curCharI%lineCount + ' \'' + getCurChar() + '\'!');
 };
 
 //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
@@ -185,6 +186,26 @@ readNum = function ()
 	return negative ? -result : result;
 };
 
+parseUnicode = function()
+{
+	expect('u');
+	nextChar();
+
+	var res = '';
+
+	for (var i = 0; i < 4; i++)
+	{
+		var curChar = getCurChar();
+		if (isNaN(parseInt(curChar)) && curChar != 'A' & curChar != 'B' && curChar != 'C' && curChar != 'D' && curChar != 'E' && curChar != 'F' &&
+			curChar != 'a' && curChar != 'b' && curChar != 'c' && curChar != 'd' && curChar != 'e' && curChar != 'f') expected('a hexidecimal character');
+
+		res += curChar;
+		nextChar();
+	}
+
+	return String.fromCharCode(parseInt(res, 16));
+};
+
 //Reads a string ending with endChar and allowing special characters to be in quoted strings
 readString = function (endChar, quoted)
 {
@@ -202,16 +223,17 @@ readString = function (endChar, quoted)
 		{
 			switch (getCurChar())
 			{
-				case '"': break;
-				case '\'': break;
-				case '\\': break;
-				case '/': break;
-				case 'b': break;
-				case 'f': break;
-				case 'n': break;
-				case 'r': break;
-				case 't': break;
-				default: throw new Error('Unrecognized string escape at ' + curCharI + ' (' + getCurChar() + ')!');
+				case '"': escaping = false; break;
+				case '\'': escaping = false; break;
+				case '\\': escaping = false; break;
+				case '/': escaping = false; break;
+				case 'b': escaping = false; break;
+				case 'f': escaping = false; break;
+				case 'n': escaping = false; break;
+				case 'r': escaping = false; break;
+				case 't': escaping = false; break;
+				case 'u': res += parseUnicode(); escaping = false; break;
+				default: throw new Error('Unrecognized string escape at ' + lineCount + ':' + curCharI%lineCount + ' (' + getCurChar() + ')!');
 			}
 		}
 
@@ -344,7 +366,7 @@ parseHandler = function (ctx)
 	expect('(');
 	nextChar();
 
-	if (Object.keys(handlers).indexOf(handlerName) == -1) throw new Error('No such handler (' + handlerName + ') at ' + curCharI + '!');	
+	if (Object.keys(handlers).indexOf(handlerName) == -1) throw new Error('No such handler (' + handlerName + ') at ' + lineCount + ':' + curCharI%lineCount + '!');	
 	var args = [];
 	args.push(ctx);
 	readListTo(ctx, args, ')');
@@ -382,6 +404,7 @@ JsonexParser.prototype.parse = function (str)
 	if (!str) return str;
 	string = str;
 	curCharI = 0;
+	lineCount = 0;
 
 	return readObject(context);
 };
