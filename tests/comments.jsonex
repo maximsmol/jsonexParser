@@ -1,0 +1,17 @@
+{
+	//A comment can be here
+	/*
+		This comment can be here too
+	*/
+	a /*A comment can be here*/: 'b',
+	b //This comment can be here too
+	: 'b',
+	c: 'c' /*A comment can be here*/ ,
+	d: 'd' //This comment can be here too , <- ha tricked you this is not parsed
+	, e: /*A comment can be here*/ callable /*This comment can be here too*/ ('a' /*COMMENT*/, /*COMMENT*/ 'b'),
+	f: //This comment can be here too
+	callable //This can be here
+	('a' //COMMENT
+	, //COMMENT
+	'b'),
+}
