@@ -149,7 +149,7 @@ JsonexParser.prototype.parseEscaped = function()
 		this.next();
 		for (var i = 0; i < 4; i++)
 		{
-			if (isNaN(parseInt(this.char(), 16))) this.illegal();
+			if ('0123456789ABCDEFabcdef'.indexOf(this.char()) == -1) this.illegal();
 
 			res += this.char();
 			this.next();
@@ -293,7 +293,7 @@ JsonexParser.prototype.parseValue = function(context)
 	else if (this.charIs('[')) return this.parseArray(context);
 	else if (this.charIs('"')) return this.readQuoteString();
 	else if (this.charIs('\'')) return this.readApostropheString();
-	else if (!isNaN(parseInt(this.char())) || this.charIs('-')) return this.readNum();
+	else if ('-0123456789'.indexOf(this.char()) != -1) return this.readNum();
 	else return this.parseReservedAndCallables(context);
 };
 
@@ -383,7 +383,7 @@ JsonexParser.prototype.readNum = function()
 			this.next();
 		}
 
-		if (isNaN(( curInt = parseInt(this.char()) )) ) break;
+		if (isNaN( curInt = parseInt(this.char()) ) ) break;
 		if (parsingFraction)
 		{
 			fraction *= 10;
@@ -470,10 +470,10 @@ JsonexParser.prototype.expect = function(char)
 		if (this.charIndex == this.string.length - 1) throw new SyntaxError('Unexpected end of input');
 		else
 		{
-			if (this.charIs(' ')) throw new SyntaxError('Unexpected token \' \'');
-			else if (this.charIs('\n')) throw new SyntaxError ('Unexpected token \'\\n\'');
-			else if (this.charIs('\t')) throw new SyntaxError ('Unexpected token \'\\t\'');
-			else if (this.charIs('\r')) throw new SyntaxError ('Unexpected token \'\\r\'');
+			if 		(this.charIs(' ') ) throw new SyntaxError('Unexpected token \' \''	 );
+			else if (this.charIs('\n')) throw new SyntaxError('Unexpected token \'\\n\'');
+			else if (this.charIs('\t')) throw new SyntaxError('Unexpected token \'\\t\'');
+			else if (this.charIs('\r')) throw new SyntaxError('Unexpected token \'\\r\'');
 			else throw new SyntaxError('Unexpected token ' + this.char());
 		}
 	}
@@ -487,20 +487,17 @@ JsonexParser.prototype.next = function()
 
 JsonexParser.prototype.charIsSpecial = function()
 {
-	return this.charIs('[') || this.charIs(']') || this.charIs('{') || this.charIs('}') ||
-		   this.charIs(':') || this.charIs(',') || this.charIs('\'') || this.charIs('"') ||
-		   this.charIs('\\');
+	return '[]{}:,\'"\\'.indexOf(this.char()) != -1;
 };
 
 JsonexParser.prototype.charIsMathOp = function()
 {
-	return this.charIs('*') || this.charIs('/') || this.charIs('-') || this.charIs('+') ||
-		   this.charIs('^') || this.charIs('!');
+	return '*/-+^!'.indexOf(this.char()) != -1;
 };
 
 JsonexParser.prototype.charIsSpace = function()
 {
-	return this.charIs(' ') || this.charIs('\n') || this.charIs('\r') || this.charIs('\t');
+	return ' \n\r\t'.indexOf(this.char()) != -1;
 };
 
 JsonexParser.prototype.charIsInvalidForName = function(isFirst)
@@ -522,12 +519,12 @@ JsonexParser.prototype.skipSpaces = function()
 		this.next();
 		if (this.charIs('/'))
 		{
-			while (!this.charIs('\n') && !this.charIs('\r'))
+			while ('\n\r'.indexOf(this.char()) == -1)
 			{
 				this.next();
 				if (this.charIndex >= this.string.length) this.expect('\n');
 			}
-			if(!this.charIs('\n') && !this.charIs('\r')) this.expect();
+			if('\n\r'.indexOf(this.char()) == -1) this.expect();
 			this.next();
 			this.skipSpaces();
 		}

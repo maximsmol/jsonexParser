@@ -1,6 +1,6 @@
 'use strict';
 
-var fs = require('fs'), JsonexParser = require('../jsonex2.js');
+var fs = require('fs'), JsonexParser = require('../jsonex.js');
 
 var handlers = {
 	callable: function(ctx, input1, input2)
