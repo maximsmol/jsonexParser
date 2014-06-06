@@ -17,6 +17,9 @@
 					"name": "punctuation.separator.array.jsonex"
 				},
 				{
+					"include": "#comments"
+				},
+				{
 					"match": "[^\\s\\]]",
 					"name": "invalid.illegal.expected-array-separator.jsonex"
 				}
@@ -38,6 +41,9 @@
 			"patterns": [
 				{
 					"include": "#list"
+				},
+				{
+					"include": "#comments"
 				}
 			]
 		},
@@ -104,21 +110,28 @@
 		},
 		"jsonexCallable":
 		{
-			"begin": "(?<=:)\\s*[\\w\\.]+\\(",
+			"begin": "(?<=:|,)\\s*[^\\d*/\\-+^!\\s\\[\\]{}:,'\"\\]][^*/\\-+^!\\s\\[\\]{}:,'\"\\]]*\\s*\\(",
 			"end": "\\)",
 			"patterns": [
 				{
 					"include": "#value"
+				},
+				{
+					"include": "#comments"
+				},
+				{
+					"match": "\\s+",
+					"name": "invalid.illegal.unexpected-space.jsonex"
 				}
 			],
 			"name": "punctuation.definition.jsonex-callable.jsonex"
 		},
 		"jsonexKey":
 		{
-			"match": "\\w+(?=:)",
+			"match": "[^\\d*/\\-+^!\\s\\[\\]{}:,'\"\\]][^*/\\-+^!\\s\\[\\]{}:,'\"\\]]*\\s*(?=:)",
 			"patterns": [
 				{
-					"include": "stringPatterns"
+					"include": "#comments"
 				},
 				{
 					"match": "\\s+",
